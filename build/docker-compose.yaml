@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  openie:
+    image: anapsix/alpine-java
+    stdin_open: true
+    tty: true
+    ulimits:
+      memlock: -1
+    shm_size: 32gb
+    ports:
+      - 8020:8020
+    volumes:
+      - ../openie:/OpenIE4
+    working_dir: /OpenIE4
+    command: java -jar openie4_restful.jar --binary --httpPort 8020
+    
+  main:
+    build: ../main
+    stdin_open: true
+    tty: true
+    ulimits:
+      memlock: -1 
+    shm_size: 32gb
+    ports:
+      - 5000:5000
+      # - 8888:8888
+    deploy:
+          resources:
+            reservations:
+              devices:
+                - driver: nvidia
+                  count: 1
+                  capabilities: [gpu]
+    volumes:
+      - ../data:/data
+      - ../models:/models
+      - ../main/src:/src
+    working_dir: /src
+    # command: python server.py
