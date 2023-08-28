@@ -135,7 +135,7 @@ openie = openies.OpenIE_4()
 def build():
     res_dict = {}
     #Stage 1 Coref Resolution
-    clusterdf = pd.DataFrame(columns=["article_id", "cluster_id", "spans", "text"])
+    cluster_list = []
     textjson = request.json
     text = textjson['text']
     text = clean_article(text)
@@ -151,8 +151,9 @@ def build():
                     'cluster_id': cluster_id,
                     'spans': str(list(cluster[0][i])),
                     'text': str(clust)}
-        clusterdf=clusterdf.append(temp_dict, ignore_index=True)
+        cluster_list.append(temp_dict)
         cluster_id+=1
+    clusterdf = pd.DataFrame(cluster_list)
     torch.cuda.empty_cache()
     # print(clusterdf)
 

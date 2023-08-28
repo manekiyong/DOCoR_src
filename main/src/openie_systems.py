@@ -1,41 +1,5 @@
 import json
 import requests
-# from stanfordcorenlp import StanfordCoreNLP
-# from pyclausie import ClausIE
-
-class OpenIE_Reverb:
-    '''
-    To run Reverb, you need run up the RESTful service
-    cd /home/kc/NLP/openie_extraction/tools/reverb
-    java -jar reverb_restful.jar --server.port=8010
-    '''
-    def __init__(self, server_port=8010):
-        server_url = 'http://localhost:' + str(server_port)
-        if server_url[-1] == '/':
-            server_url = server_url[:-1]
-        self.server_url = server_url
-        self.extract_context = '/reverb'
-
-    def extract(self, text):
-        try:
-            requests.get(self.server_url)
-        except requests.exceptions.ConnectionError:
-            raise Exception('Check whether you have started the ReVerb server')
-
-        try:
-            r = requests.post(self.server_url + self.extract_context, data=text, verify=False)
-            extractions = json.loads(r.text)
-            reverb_triple = []
-            print(extractions)
-            for triple in extractions['extractions']:
-                reverb_triple.append({"sub": triple['sub'], "rel": triple['rel'], "obj": triple['obj'],
-                                      "conf": float(triple['conf'])})
-        except:
-            reverb_triple = []
-            print('Reverb failed: ', text)
-
-        return reverb_triple
-
 
 class OpenIE_4:
     '''
@@ -44,7 +8,7 @@ class OpenIE_4:
     java -jar openie4_restful.jar --binary --httpPort 8020
     '''
     def __init__(self, server_port=8020):
-        server_url = 'http://openie4:'+str(server_port)
+        server_url = 'http://openie:'+str(server_port)
         if server_url[-1] == '/':
             server_url = server_url[:-1]
         self.server_url = server_url
